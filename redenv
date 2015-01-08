@@ -51,6 +51,13 @@ if [[ "x" = "x$RUBY_RESOLVED" ]]; then
     exit 1
 fi
 RUBY_VERSION=$(echo "$RUBY_RESOLVED" | grep -Eo '([0-9.]+)$')
+if [[ -z "$RUBY_VERSION" ]]; then
+    RUBY_VERSION=$(readlink -f "$RUBY_RESOLVED" | grep -Eo '([0-9.]+)$')
+fi
+if [[ -z "$RUBY_VERSION" ]]; then
+    echo "redenv: error: Cannot determine ruby version for $RUBY_RESOLVED"
+    exit 1
+fi
 RUBY_BINDIR=$(dirname "$RUBY_RESOLVED")
 
 if ! mkdir -p "$DEST_DIR/bin"; then
